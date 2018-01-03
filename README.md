@@ -25,7 +25,10 @@ Then set the format of your logs in production:
 # config/prod.exs
 
 config :logger, :console,
-  level: :debug,
+  level: :info,
   format: {CeeLogFormatter, :format}
 
 ```
+
+You should also use the [PlugLoggerJson](https://github.com/bleacherreport/plug_logger_json)
+package, which configures plug to output logs as maps so the formatter gets more info.
