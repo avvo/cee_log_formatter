@@ -35,6 +35,8 @@ defmodule CeeLogFormatter.Mixfile do
   end
 
   defp deps do
-    []
+    [
+      poison: ">= 0.1.0"
+    ]
   end
 end
