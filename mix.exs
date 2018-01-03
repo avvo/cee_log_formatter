@@ -1,28 +1,40 @@
-defmodule PlugLoggerCee.Mixfile do
+defmodule CeeLogFormatter.Mixfile do
   use Mix.Project
 
   def project do
     [
-      app: :plug_logger_cee,
-      version: "0.1.0",
+      app: :cee_log_formatter,
+      build_embedded: Mix.env == :prod,
+      deps: deps(),
+      description: description(),
       elixir: "~> 1.5",
+      package: package(),
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      version: "0.1.0",
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
+    [extra_applications: [:logger]]
+  end
+
+  defp description do
+    """
+    A log formatter for the CEE format.
+    """
+  end
+
+  defp package do
     [
-      extra_applications: [:logger]
+      name: :cee_log_formatter,
+      files: ["lib", "mix.exs", "README.md"],
+      maintainers: ["Donald Plummer"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/avvo/cee_log_formatter"},
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
-    [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
-    ]
+    []
   end
 end

@@ -1,21 +1,31 @@
 # PlugLoggerCee
 
-**TODO: Add description**
+A plug for formatting your logs for kibana/graylog/etc in the CEE (or lumberjack?) format. Like:
+
+```
+@cee {"foo":"bar"}
+```
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `plug_logger_cee` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `cee_log_formatter` to your list of dependencies in
+`mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:plug_logger_cee, "~> 0.1.0"}
+    {:cee_log_formatter, "~> 0.1.0"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/plug_logger_cee](https://hexdocs.pm/plug_logger_cee).
+Then set the format of your logs in production:
 
+```
+# config/prod.exs
+
+config :logger, :console,
+  level: :debug,
+  format: {CeeLogFormatter, :format}
+
+```
