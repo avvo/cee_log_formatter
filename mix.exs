@@ -36,7 +36,8 @@ defmodule CeeLogFormatter.Mixfile do
 
   defp deps do
     [
-      poison: ">= 0.1.0"
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:poison, ">= 0.1.0"},
     ]
   end
 end
