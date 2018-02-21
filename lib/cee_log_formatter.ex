@@ -18,6 +18,7 @@ defmodule CeeLogFormatter do
   def format(level, %{} = msg, _timestamp, metadata) do
     msg
     |> Map.put(:severity, level)
+    |> merge_app_config()
     |> Map.merge(Enum.into(metadata, %{}))
     |> Poison.encode!
     |> cee_line()
@@ -33,4 +34,23 @@ defmodule CeeLogFormatter do
   defp cee_line(json) do
     "@cee: #{json}\n"
   end
+
+  defp merge_app_config(msg) do
+    case Application.get_env(:cee_log_formatter, :metadata) do
+      list when is_list(list) ->
+        put_conf(msg, list)
+      _ -> msg
+    end
+  end
+
+  defp put_conf(msg, []), do: msg
+  defp put_conf(msg, [{key, value} | rest]) when is_atom(key) and is_binary(value) do
+    Map.put(msg, key, value)
+    |> put_conf(rest)
+  end
+  defp put_conf(msg, [{key, {mod, fun, args}} | rest]) when is_atom(key) and is_atom(mod) and is_atom(fun) and is_list(args) do
+    value = apply(mod, fun, args)
+    put_conf(msg, [{key, value} | rest])
+  end
+  defp put_conf(msg, [_ | rest]), do: put_conf(msg, rest)
 end
