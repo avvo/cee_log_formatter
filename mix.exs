@@ -4,13 +4,13 @@ defmodule CeeLogFormatter.Mixfile do
   def project do
     [
       app: :cee_log_formatter,
-      build_embedded: Mix.env == :prod,
+      build_embedded: Mix.env() == :prod,
       deps: deps(),
       description: description(),
       elixir: "~> 1.5",
       package: package(),
-      start_permanent: Mix.env == :prod,
-      version: "0.1.0",
+      start_permanent: Mix.env() == :prod,
+      version: "0.1.0"
     ]
   end
 
@@ -30,13 +30,14 @@ defmodule CeeLogFormatter.Mixfile do
       files: ["lib", "mix.exs", "README.md"],
       maintainers: ["Donald Plummer"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/avvo/cee_log_formatter"},
+      links: %{"GitHub" => "https://github.com/avvo/cee_log_formatter"}
     ]
   end
 
   defp deps do
     [
-      poison: ">= 0.1.0"
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:poison, ">= 0.1.0"}
     ]
   end
 end
