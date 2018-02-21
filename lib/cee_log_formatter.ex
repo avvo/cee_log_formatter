@@ -6,27 +6,30 @@ defmodule CeeLogFormatter do
   alias Logger.Formatter
 
   @spec format(
-    Logger.level,
-    Logger.message,
-    Formatter.time,
-    Keyword.t
-  ) :: IO.chardata
+          Logger.level(),
+          Logger.message(),
+          Formatter.time(),
+          Keyword.t()
+        ) :: IO.chardata()
 
-  def format(level, ("{\"" <> _) = msg, timestamp, metadata) do
+  def format(level, "{\"" <> _ = msg, timestamp, metadata) do
     format(level, Poison.decode!(msg), timestamp, metadata)
   end
+
   def format(level, %{} = msg, _timestamp, metadata) do
     msg
     |> Map.put(:severity, level)
     |> merge_app_config()
     |> Map.merge(Enum.into(metadata, %{}))
-    |> Poison.encode!
+    |> Poison.encode!()
     |> cee_line()
   end
+
   def format(level, msg, timestamp, metadata) do
-    message = [:message]
-    |> Logger.Formatter.format(level, msg, timestamp, metadata)
-    |> to_string()
+    message =
+      [:message]
+      |> Logger.Formatter.format(level, msg, timestamp, metadata)
+      |> to_string()
 
     format(level, %{msg: message}, timestamp, metadata)
   end
@@ -39,18 +42,24 @@ defmodule CeeLogFormatter do
     case Application.get_env(:cee_log_formatter, :metadata) do
       list when is_list(list) ->
         put_conf(msg, list)
-      _ -> msg
+
+      _ ->
+        msg
     end
   end
 
   defp put_conf(msg, []), do: msg
+
   defp put_conf(msg, [{key, value} | rest]) when is_atom(key) and is_binary(value) do
     Map.put(msg, key, value)
     |> put_conf(rest)
   end
-  defp put_conf(msg, [{key, {mod, fun, args}} | rest]) when is_atom(key) and is_atom(mod) and is_atom(fun) and is_list(args) do
+
+  defp put_conf(msg, [{key, {mod, fun, args}} | rest])
+       when is_atom(key) and is_atom(mod) and is_atom(fun) and is_list(args) do
     value = apply(mod, fun, args)
     put_conf(msg, [{key, value} | rest])
   end
+
   defp put_conf(msg, [_ | rest]), do: put_conf(msg, rest)
 end
