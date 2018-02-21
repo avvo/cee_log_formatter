@@ -51,15 +51,15 @@ For instance, you could have the current unix timestamp added to the log with:
 
 ```elixir
 defmodule TimestampLog do
-  def current() do
-    "#{:os.system_time(:second)}"
+  def current(resolution) do
+    "#{:os.system_time(resolution)}"
   end
 end
 
 # in config.exs
 config :cee_log_formatter,
   metadata: [
-    timestamp: {TimestampLog, :current, []}
+    timestamp: {TimestampLog, :current, [:second]}
   ]
 ```
 
