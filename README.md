@@ -1,6 +1,7 @@
 # PlugLoggerCee
 
-A plug for formatting your logs for kibana/graylog/etc in the CEE (or lumberjack?) format. Like:
+A plug for formatting your logs for kibana/graylog/etc in the CEE (or lumberjack?) format, or just
+json. Like:
 
 ```
 @cee {"foo":"bar"}
@@ -14,7 +15,7 @@ The package can be installed by adding `cee_log_formatter` to your list of depen
 ```elixir
 def deps do
   [
-    {:cee_log_formatter, "~> 0.1.0"}
+    {:cee_log_formatter, "~> 0.1"}
   ]
 end
 ```
@@ -31,6 +32,14 @@ config :logger, :console,
 ```
 
 ## Configuration
+
+You can change the prefix line (if you just want json):
+
+```elixir
+config :cee_log_formatter,
+  prefix: ""
+```
+
 
 You can add metadata to all your requests via config options:
 

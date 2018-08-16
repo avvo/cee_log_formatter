@@ -54,14 +54,24 @@ defmodule CeeLogFormatterTest do
     end)
   end
 
-  def with_env_config([metadata: metadata], func) do
-    original_conf = Application.get_env(:cee_log_formatter, :metadata)
-    Application.put_env(:cee_log_formatter, :metadata, metadata)
+  test "alternate line prefix" do
+    with_env_config([prefix: ""], fn ->
+      assert CeeLogFormatter.format(:info, "hello", nil, []) ==
+               ~s({"severity":"info","msg":"hello"}\n)
+    end)
+  end
+
+  def with_env_config([{key, value}], func) do
+    original_conf = Application.get_env(:cee_log_formatter, key)
+    Application.put_env(:cee_log_formatter, key, value)
 
     try do
       func.()
     after
-      Application.put_env(:cee_log_formatter, :metadata, original_conf)
+      case original_conf do
+        nil -> Application.delete_env(:cee_log_formatter, key)
+        _ -> Application.put_env(:cee_log_formatter, key, original_conf)
+      end
     end
   end
 end

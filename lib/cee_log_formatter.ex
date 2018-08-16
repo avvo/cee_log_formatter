@@ -35,7 +35,8 @@ defmodule CeeLogFormatter do
   end
 
   defp cee_line(json) do
-    "@cee: #{json}\n"
+    prefix = Application.get_env(:cee_log_formatter, :prefix, "@cee: ")
+    "#{prefix}#{json}\n"
   end
 
   defp merge_app_config(msg) do

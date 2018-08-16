@@ -7,7 +7,7 @@ defmodule CeeLogFormatter.Mixfile do
       build_embedded: Mix.env() == :prod,
       deps: deps(),
       description: description(),
-      elixir: "~> 1.5",
+      elixir: "~> 1.4",
       package: package(),
       start_permanent: Mix.env() == :prod,
       version: "0.2.0"
