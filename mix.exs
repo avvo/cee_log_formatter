@@ -10,7 +10,7 @@ defmodule CeeLogFormatter.Mixfile do
       elixir: "~> 1.4",
       package: package(),
       start_permanent: Mix.env() == :prod,
-      version: "0.2.0"
+      version: "0.2.1"
     ]
   end
 
