@@ -58,8 +58,13 @@ defmodule CeeLogFormatter do
 
   defp put_conf(msg, [{key, {mod, fun, args}} | rest])
        when is_atom(key) and is_atom(mod) and is_atom(fun) and is_list(args) do
-    value = apply(mod, fun, args)
-    put_conf(msg, [{key, value} | rest])
+    try do
+      value = apply(mod, fun, args) |> String.Chars.to_string
+      put_conf(msg, [{key, value} | rest])
+    rescue
+      Protocol.UndefinedError -> put_conf(msg, rest)
+      _ -> put_conf(msg, rest)
+    end
   end
 
   defp put_conf(msg, [_ | rest]), do: put_conf(msg, rest)

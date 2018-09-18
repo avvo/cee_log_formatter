@@ -5,6 +5,12 @@ defmodule CeeLogFormatterTest do
     "the word is #{word}"
   end
 
+  def test_fun_atom(), do: :turtles
+
+  def test_fun_map(), do: %{this_is_a_map: true}
+
+  def test_fun_error(), do: raise "oh no"
+
   # timestamp = {{2014, 12, 30}, {12, 6, 30, 100}}
 
   test "formats raw messages" do
@@ -51,6 +57,27 @@ defmodule CeeLogFormatterTest do
     with_env_config([metadata: [foo: {CeeLogFormatterTest, :test_fun, ["bird"]}]], fn ->
       assert CeeLogFormatter.format(:info, "hello", nil, []) ==
                ~s(@cee: {"severity":"info","msg":"hello","foo":"the word is bird"}\n)
+    end)
+  end
+
+  test "calls mfas for values and converts to strings" do
+    with_env_config([metadata: [foo: {CeeLogFormatterTest, :test_fun_atom, []}]], fn ->
+      assert CeeLogFormatter.format(:info, "hello", nil, []) ==
+               ~s(@cee: {"severity":"info","msg":"hello","foo":"turtles"}\n)
+    end)
+  end
+
+  test "calls mfas for values and doesn't blow up if String.Chars doesn't have a protocol" do
+    with_env_config([metadata: [foo: {CeeLogFormatterTest, :test_fun_map, []}]], fn ->
+      assert CeeLogFormatter.format(:info, "hello", nil, []) ==
+               ~s(@cee: {"severity":"info","msg":"hello"}\n)
+    end)
+  end
+
+  test "calls mfas for values and doesn't blow up if the func blows up" do
+    with_env_config([metadata: [foo: {CeeLogFormatterTest, :test_fun_error, []}]], fn ->
+      assert CeeLogFormatter.format(:info, "hello", nil, []) ==
+               ~s(@cee: {"severity":"info","msg":"hello"}\n)
     end)
   end
 
