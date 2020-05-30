@@ -13,7 +13,7 @@ defmodule CeeLogFormatter do
         ) :: IO.chardata()
 
   def format(level, "{\"" <> _ = msg, timestamp, metadata) do
-    format(level, Poison.decode!(msg), timestamp, metadata)
+    format(level, json_library().decode!(msg), timestamp, metadata)
   end
 
   def format(level, %{} = msg, _timestamp, metadata) do
@@ -21,7 +21,7 @@ defmodule CeeLogFormatter do
     |> Map.put(:severity, level)
     |> merge_app_config()
     |> Map.merge(Enum.into(metadata, %{}))
-    |> Poison.encode!()
+    |> json_library().encode!()
     |> cee_line()
   end
 
@@ -33,6 +33,8 @@ defmodule CeeLogFormatter do
 
     format(level, %{msg: message}, timestamp, metadata)
   end
+
+  defp json_library, do: Application.fetch_env!(:cee_log_formatter, :json_library)
 
   defp cee_line(json) do
     prefix = Application.get_env(:cee_log_formatter, :prefix, "@cee: ")
@@ -59,7 +61,7 @@ defmodule CeeLogFormatter do
   defp put_conf(msg, [{key, {mod, fun, args}} | rest])
        when is_atom(key) and is_atom(mod) and is_atom(fun) and is_list(args) do
     try do
-      value = apply(mod, fun, args) |> String.Chars.to_string
+      value = apply(mod, fun, args) |> String.Chars.to_string()
       put_conf(msg, [{key, value} | rest])
     rescue
       Protocol.UndefinedError -> put_conf(msg, rest)
