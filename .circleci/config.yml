@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  test:
+    working_directory: /srv/cee_log_formatter
+
+    docker:
+      - image: avvo/elixir:1.10.2-otp-22-alpine-3.11
+
+    steps:
+      - checkout
+
+      - run: mix do deps.get
+
+      - run: mix test
+
+      - store_test_results:
+          path: ~/cee_log_formatter/_build/test/lib/cee_log_formatter/
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+    - test:
+        context: org-global

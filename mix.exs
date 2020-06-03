@@ -10,12 +10,12 @@ defmodule CeeLogFormatter.Mixfile do
       elixir: "~> 1.4",
       package: package(),
       start_permanent: Mix.env() == :prod,
-      version: "0.2.2"
+      version: "0.2.3"
     ]
   end
 
   def application do
-    [extra_applications: [:logger]]
+    [extra_applications: [:logger], env: [json_library: Poison]]
   end
 
   defp description do
@@ -37,7 +37,7 @@ defmodule CeeLogFormatter.Mixfile do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:poison, ">= 0.1.0"}
+      {:poison, ">= 0.1.0", optional: true}
     ]
   end
 end

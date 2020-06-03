@@ -40,6 +40,11 @@ config :cee_log_formatter,
   prefix: ""
 ```
 
+By default CeeLogFormatter will try to use Poison to encode and decode JSON, but you can configure it to any other json library that implements `encode!()` and `decode!()` callbacks:
+
+```elixir
+config :cee_log_formatter, :json_library, Jason
+```
 
 You can add metadata to all your requests via config options:
 
