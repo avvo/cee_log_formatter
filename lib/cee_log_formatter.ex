@@ -5,6 +5,8 @@ defmodule CeeLogFormatter do
 
   alias Logger.Formatter
 
+  @json_library Application.fetch_env!(:cee_log_formatter, :json_library)
+
   @spec format(
           Logger.level(),
           Logger.message(),
@@ -13,7 +15,7 @@ defmodule CeeLogFormatter do
         ) :: IO.chardata()
 
   def format(level, "{\"" <> _ = msg, timestamp, metadata) do
-    format(level, json_library().decode!(msg), timestamp, metadata)
+    format(level, @json_library.decode!(msg), timestamp, metadata)
   end
 
   def format(level, %{} = msg, _timestamp, metadata) do
@@ -21,7 +23,7 @@ defmodule CeeLogFormatter do
     |> Map.put(:severity, level)
     |> merge_app_config()
     |> Map.merge(Enum.into(metadata, %{}))
-    |> json_library().encode!()
+    |> @json_library.encode!()
     |> cee_line()
   end
 
@@ -33,8 +35,6 @@ defmodule CeeLogFormatter do
 
     format(level, %{msg: message}, timestamp, metadata)
   end
-
-  defp json_library, do: Application.fetch_env!(:cee_log_formatter, :json_library)
 
   defp cee_line(json) do
     prefix = Application.get_env(:cee_log_formatter, :prefix, "@cee: ")
